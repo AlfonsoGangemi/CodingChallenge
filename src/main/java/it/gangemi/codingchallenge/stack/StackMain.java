@@ -1,17 +1,15 @@
 package it.gangemi.codingchallenge.stack;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 
 public class StackMain {
 
     public static void main(String[] args) {
         final ArrayStack<Integer> integerArrayStack = new ArrayStack<>(5, Integer.class);
-        IntStream.rangeClosed(1, 6).forEach(x -> out_in(integerArrayStack, x));
-    }
-
-    private static void out_in(ArrayStack<Integer> integerArrayStack, int x) {
-        out(integerArrayStack);
-        in(integerArrayStack, x);
+        final CompletableFuture<Void> asyncOut = CompletableFuture.runAsync(() -> IntStream.rangeClosed(1, 6).forEach(x -> out(integerArrayStack)));
+        final CompletableFuture<Void> asyncIn = CompletableFuture.runAsync(() -> IntStream.rangeClosed(1, 6).forEach(x -> in(integerArrayStack, x)));
+        CompletableFuture.allOf(asyncOut, asyncIn).join();
     }
 
     private static void in(ArrayStack<Integer> integerArrayStack, int x) {
@@ -25,8 +23,8 @@ public class StackMain {
 
     private static void out(ArrayStack<Integer> integerArrayStack) {
         try {
-            System.out.println(integerArrayStack.pull());
-            System.out.println(integerArrayStack.peek());
+            integerArrayStack.pull();
+            integerArrayStack.peek();
         } catch (EmptyStackException e) {
             System.err.println(e.getClass());
         }

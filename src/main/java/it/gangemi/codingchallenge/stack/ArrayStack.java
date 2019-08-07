@@ -13,20 +13,28 @@ public class ArrayStack<T> implements Stack<T> {
     }
 
     @Override
+    synchronized
     public void push(T item) throws FullStackException {
         if (index >= items.length) throw new FullStackException();
+        System.out.println(">>" + item);
         items[index++] = item;
     }
 
     @Override
+    synchronized
     public T pull() throws EmptyStackException {
         if (index <= 0) throw new EmptyStackException();
-        return items[--index];
+        final T item = items[--index];
+        System.out.println("<<" + item);
+        return item;
     }
 
     @Override
+    synchronized
     public T peek() throws EmptyStackException {
         if (index <= 0) throw new EmptyStackException();
-        return items[index - 1];
+        final T item = items[index - 1];
+        System.out.println("==" + item);
+        return item;
     }
 }
